@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"lib": ["es2021"],
-		"target": "ES5",
+		"target": "ES6",
 		"module": "CommonJS",
 		"outDir": "bin",
 		"declaration": true

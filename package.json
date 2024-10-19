@@ -1,11 +1,12 @@
 {
   "name": "hebece",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "eduVULCAN library for node.js",
   "main": "bin/index.js",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -r ./bin"
+    "clean": "rm -r ./bin",
+    "upload": "npm run clean && npm run build && npm publish"
   },
   "keywords": [],
   "author": "xiaom1hype",
@@ -22,9 +23,12 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.13.0",
     "@types/node": "^22.7.7",
     "eslint": "^9.13.0",
+    "globals": "^15.11.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.10.0"
   }
 }

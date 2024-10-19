@@ -57,6 +57,12 @@ const generateKeyPair = async () => {
   };
 
 class KeyPair {
+	/**
+	 * Generates a new KeyPair for HebeCE API.
+	 * 
+	 * @async
+	 * @returns {Promise<{fingerprint: string, privateKey: string, certificate: string}>}
+	 */
 	constructor() {
 		return (async () => {
 			const keypair = await generateKeyPair();
@@ -65,9 +71,6 @@ class KeyPair {
 				fingerprint: keypair.fingerprint,
 				privateKey: keypair.privateKey,
 				certificate: keypair.certificate,
-				json: () => {
-					return JSON.stringify(keypair, null, 2);
-				},
 			};
 		})();
 	}

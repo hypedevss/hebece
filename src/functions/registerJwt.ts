@@ -66,11 +66,5 @@ export default async (apToken:string, keyPair:KeyPair) => {
 	const response = await fetch(url, options);
 	// @ts-ignore
 	const data:JwtOutput = await response.json();
-	const obj = {
-		restUrl: data.Envelope.RestURL,
-		status: data.Status.Code,
-		message: data.Status.Message,
-	}
-
-	return obj;
+	return data;
 };

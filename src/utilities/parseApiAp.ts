@@ -15,7 +15,12 @@ export interface ApiApContent {
 	ErrorMessage: null,
 	Capabilities: Array<string>,
 }
-
+/**
+ * Parses /api/ap output
+ * 
+ * @param apContent The content of https://eduvulcan.pl/api/ap
+ * @returns {object}
+ */
 export default async (apContent:string) =>  {
 	// parse /api/ap output
 	let apJson:ApiApContent= JSON.parse(apContent.split('value=\'')[1].split('\' />')[0]);
