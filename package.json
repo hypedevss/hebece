@@ -1,0 +1,30 @@
+{
+  "name": "hebece",
+  "version": "0.0.1",
+  "description": "eduVULCAN library for node.js",
+  "main": "bin/index.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -r ./bin"
+  },
+  "keywords": [],
+  "author": "xiaom1hype",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypedevss/hebece"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "jose": "^5.9.4",
+    "moment": "^2.30.1",
+    "node-forge": "^1.3.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.7",
+    "eslint": "^9.13.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
