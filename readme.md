@@ -6,12 +6,77 @@
 # Features
 
 - [x] Authentication
-- [ ] Multi student
+- [x] Multi student (Untested + half-assed)
 - [ ] Grades
 - [ ] Lessons
 - [ ] Homework
 - [ ] Attendance
-- [ ] Lucky Number
+- [x] Lucky Number
+
+# Notice
+This library is highly experimental, if you want to contribute, you can contribute.
+Most of the functions is the raw JSON response from the API, so it can be pretty messy.
 
 # Usage
-Coming Soon... The library is still under development.
+  - [new hebece.Keypair()](#new-hebecekeypair)
+  - [new hebece.Keystore(path, year)](#new-hebecekeystorepath-year)
+  - [new hebece.VulcanJwtRegister(keypair, apiap, tokenIndex)](#new-hebecevulcanjwtregisterkeypair-apiap-tokenindex)
+  - [new hebece.VulcanHebeCe(keypair, resturl)](#new-hebecevulcanhebecekeypair-resturl)
+  - [After-connect functions](#after-connect-functions)
+  - [.getLuckyNumber()](#getluckynumber)
+
+# new hebece.Keypair()
+Generates a new KeyPair for HebeCE API.
+
+- **Returns: KeyPair** - Result
+
+# new hebece.Keystore(path, year)
+Generates a temporary 30mins/1 year JSON database
+
+After the DB expires it will automatically clear itself.
+
+- **Params**
+  - **path** - The path of the database
+  - **year** - Should the database expire in a year?
+- **Throws**: 
+  - **Error()** - If something is wrong
+
+# new hebece.VulcanJwtRegister(keypair, apiap, tokenIndex)
+Creates a manager for authentication with VULCAN HebeCE API.
+
+- **Params**
+	- **keypair** - Your Keypair
+	- **apiap** - https://eduvulcan.pl/api/ap output
+	- **tokenIndex** - Which token from /api/ap should be used? (Half-assed multistudent implementation)
+
+- **Returns**
+  - **.init()** - Function to initialize the manager, send the request to the API
+
+- **Throws**: 
+  - **Error()** - If something is wrong 
+
+# new hebece.VulcanHebeCe(keypair, resturl)
+Creates the main manager for VULCAN HebeCE API functionality.
+
+- **Params**
+	- **keypair** - Your Keypair
+	- **restUrl** - The REST URL that the API should use
+
+- **Returns**
+  - **.connect()** - Function to connect to the API and send requests.
+
+- **Throws**: 
+  - **Error()** - If something is wrong
+
+# After-connect functions
+
+## .getLuckyNumber()
+Gets the todays lucky number
+
+- **Returns**
+	- **object**
+    	- **day** - Day of the lucky number
+    	- **number** - The lucky number
+
+- **Throws**
+  - **Error()** - If something is wrong.

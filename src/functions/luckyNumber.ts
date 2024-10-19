@@ -1,14 +1,15 @@
 import * as signer from './signer';
-import * as crypto from 'crypto';
 import * as moment from 'moment';
 import * as strings from '../strings';
-import { KeyPair } from '.'
+import { KeyPair, LuckyNumber } from '.'
 import { Pupil } from '../types';
-export default  async (keyPair:KeyPair, restUrl: string) => {
+
+export default async (keyPair:KeyPair, restUrl: string, pupil:Pupil) => {
 	if (!restUrl) throw new Error('No REST URL provided!');
 	if (!keyPair) throw new Error('No KEYPAIR provided!');
+	if (!pupil) throw new Error('No PUPIL provided!');
 	const tenant = restUrl.replace(`${strings.BASE_URL}/`, '');
-	const url = `${strings.BASE_URL}/${tenant}/api/mobile/register/hebe?mode=2`;
+	const url = `${strings.BASE_URL}/${tenant}/${pupil.Envelope[0].Unit.Symbol}/api/mobile/school/lucky?constituentId=${pupil.Envelope[0].ConstituentUnit.Id}&day=${moment().format('YYYY-MM-DD')}`;
 	const date = new Date();
 	const dateUTC = date.toUTCString();
 	const headers = {
@@ -31,9 +32,11 @@ export default  async (keyPair:KeyPair, restUrl: string) => {
 	const aab = await fetch(url, {
 		method: 'GET',
 		headers: headers,
-	});
-
-	const data = await aab.json();
-	
-	return data as Pupil;
-};
+	})
+	// @ts-ignore
+	const data:LuckyNumber = await aab.json();
+	return {
+		Day: data.Envelope.Day,
+		Number: data.Envelope.Number
+	}
+}

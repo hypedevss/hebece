@@ -21,3 +21,20 @@ export interface JwtOutput {
 	Timestamp: number,
 	TimestampFormatted: string,
 }
+
+// Lucky Number
+
+export interface LuckyNumber {
+	EnvelopeType: string,
+	Envelope: {
+		Day: string,
+		Number: number,
+	},
+	Status: {
+		Code: number,
+		Message: string,
+	},
+	RequestId: string,
+	Timestamp: number,
+	TimestampFormatted: string,
+}

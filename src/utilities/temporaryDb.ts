@@ -11,8 +11,6 @@ class TemporaryDb {
 	/**
 	 * Generates a temporary 30mins/1 year JSON database
 	 * 
-	 * Store the Keypair in the 30 minute database at it will expire.
-	 * 
 	 * Store the accessToken from /api/ap in the 1 year to renew credentials.
 	 * 
 	 * @param path The path of the database
