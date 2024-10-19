@@ -6,12 +6,12 @@
 # Features
 
 - [x] Authentication
-- [] Multi student
-- [] Grades
-- [] Lessons
-- [] Homework
-- [] Attendance
-- [] Lucky Number
+- [ ] Multi student
+- [ ] Grades
+- [ ] Lessons
+- [ ] Homework
+- [ ] Attendance
+- [ ] Lucky Number
 
 # Usage
 Coming Soon... The library is still under development.
