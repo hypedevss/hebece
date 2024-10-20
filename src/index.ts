@@ -3,9 +3,11 @@ import registerJwt from './functions/registerJwt';
 import registerHebe from './functions/registerHebe';
 import luckyNumber from './functions/luckyNumber';
 import parseApiAp, { ApiApContent } from './utilities/parseApiAp';
+import ggrades from './functions/grades';
 import getHw from './functions/homeWork';
 import Keystore from './utilities/temporaryDb';
 import { JwtOutput, KeyPair, Pupil } from './types';
+import { Grade, Homework } from './functions';
 class Keypair {
 	/**
 	 * Creates a new Keypair manager for authentication with VULCAN HebeCE API.
@@ -109,12 +111,21 @@ class VulcanHebeCe {
 	 * Gets your homework from the API.
 	 * @param dateFrom The start of the date range
 	 * @param dateTo  The end of the date range
-	 * @returns 
+	 * @returns {Homework}
 	 */
 	async getHomework(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
 		const homework = await getHw(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
 		return homework;
+	}
+	/**
+	 * Gets your grades for the current period from the API.
+	 * @returns {Grade}
+	 */
+	async getGrades() {
+		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+		const grades = await ggrades(this.keypair, this.restUrl, this.pupilJson);
+		return grades;
 	}
 }
 

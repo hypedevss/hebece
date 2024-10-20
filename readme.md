@@ -7,23 +7,30 @@
 
 - [x] Authentication
 - [x] Multi student (Untested + half-assed)
-- [ ] Grades
+- [x] Grades
 - [ ] Lessons
-- [ ] Homework
+- [x] Homework
 - [ ] Attendance
 - [x] Lucky Number
 
 # Notice
 This library is highly experimental, if you want to contribute, you can contribute.
+
 Most of the functions is the raw JSON response from the API, so it can be pretty messy.
 
+Every output from functions has it's typings, so it's easier to develop as you already know the fields.
+
 # Usage
+
+# This will be moved to a GitBook documentation to fit this + typings
   - [new hebece.Keypair()](#new-hebecekeypair)
   - [new hebece.Keystore(path, year)](#new-hebecekeystorepath-year)
   - [new hebece.VulcanJwtRegister(keypair, apiap, tokenIndex)](#new-hebecevulcanjwtregisterkeypair-apiap-tokenindex)
   - [new hebece.VulcanHebeCe(keypair, resturl)](#new-hebecevulcanhebecekeypair-resturl)
   - [After-connect functions](#after-connect-functions)
   - [.getLuckyNumber()](#getluckynumber)
+  - [.getHomework(dateFrom, dateTo)](#gethomeworkdatefrom-dateto)
+  - [.getGrades()](#getgrades)
 
 # new hebece.Keypair()
 Generates a new KeyPair for HebeCE API.
@@ -80,3 +87,27 @@ Gets the todays lucky number
 
 - **Throws**
   - **Error()** - If something is wrong.
+  
+## .getHomework(dateFrom, dateTo) 
+Gets your homework from the API.
+
+- **Params**
+  - **dateFrom** - The start of the date range
+  - **dateTo** - The end of the date range
+
+- **Returns**
+  - **object** - Homework object
+
+- **Throws**
+  - **Error()** - If something is wrong
+
+## .getGrades()
+Gets your grades for the current period from the API.
+
+- **Returns**
+  - **object** - Grades object
+  
+- **Throws**
+  - **Error()** - If something is wrong
+
+

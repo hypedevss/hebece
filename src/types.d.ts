@@ -1,3 +1,5 @@
+import { VulcanHebeDate } from "./functions";
+
 export interface KeyPair {
 	fingerprint: string;
 	privateKey: string;
@@ -20,6 +22,8 @@ export interface JwtOutput {
 	Timestamp: number,
 	TimestampFormatted: string,
 }
+
+// Pupil
 
 interface EducatorFromList {
 	GlobalKey: string
@@ -49,89 +53,93 @@ interface Educator {
 		Roles: Array<EducatorRole>,
 }
 
+interface PupilLinks {
+	Root: string,
+	Group: string,
+	Symbol: string,
+	Alias: string,
+	QuestionnaireRoot: string,
+	ExResourcesUrl: string,
+}
+
+interface PupilConstituentUnit {
+	Id: number
+	Short: string
+	Name: string
+	Address: string
+	Patron: string
+	SchoolTopic: string
+}
+
+interface PupilUnit {
+	Id: number
+	Symbol: string
+	Short: string
+	RestURL: string
+	Name: string
+	Address: string
+	Patron: string
+	DisplayName: string
+	SchoolTopic: string
+}
+
+interface PupilJournal {
+	Id: number
+	YearStart: VulcanHebeDate
+	YearEnd: VulcanHebeDate
+	PupilNumber: number
+}
+
+interface PupilData {
+	Id: number
+	LoginId: number
+	LoginValue: string
+	FirstName: string
+	SecondName: string
+	Surname: string
+	Sex: boolean
+}
+interface PupilConstraints {
+	AbsenceDaysBefore: number,
+	AbsenceHoursBefore: string
+	PresenceBlockade: any
+}
+
+interface PupilPolicies {
+	Privacy: any
+	Cookies: any
+	InfoEnclosure: any
+	AccessDeclaration: any
+}
+
+interface PupilMessageBox {
+	Id: number
+	GlobalKey: string
+	Name: string
+}
 interface PupilEnvelope {
 	TopLevelPartition: string,
 	Partition: string,
-	Links: {
-		Root: string,
-		Group: string,
-		Symbol: string,
-		Alias: string,
-		QuestionnaireRoot: string,
-		ExResourcesUrl: string,
-	},
+	Links: PupilLinks
 	ClassDisplay: string,
 	InfoDisplay: string
 	FullSync: boolean
 	SenderEntry: any
 	Login: null
-	Unit: {
-		Id: number
-		Symbol: string
-		Short: string
-		RestURL: string
-		Name: string
-		Address: string
-		Patron: string
-		DisplayName: string
-		SchoolTopic: string
-	},
-	ConstituentUnit: {
-		Id: number
-		Short: string
-		Name: string
-		Address: string
-		Patron: string
-		SchoolTopic: string
-	}
+	Unit: PupilUnit
+	ConstituentUnit: PupilConstituentUnit
 	Capabilities: Array<string>,
 	Educators: Array<Educator>,
 	EducatorsList: Array<EducatorFromList>
-	Pupil: {
-		Id: number
-		LoginId: number
-		LoginValue: string
-		FirstName: string
-		SecondName: string
-		Surname: string
-		Sex: boolean
-	},
+	Pupil: PupilData
 	CaretakerId: null
 	Periods: Array<Period>
-	Journal: {
-		Id: number
-		YearStart: {
-			Timestamp: number
-			Date: string
-			DateDisplay: string
-			Time: string
-		},
-		YearEnd: {
-			Timestamp: number
-			Date: string
-			DateDisplay: string
-			Time: string
-		},
-		PupilNumber: number
-	},
-	Constraints: {
-		AbsenceDaysBefore: number,
-		AbsenceHoursBefore: string
-		PresenceBlockade: any
-	},
+	Journal: PupilJournal
+	Constraints: PupilConstraints
 	State: 0,
-	Policies: {
-		Privacy: any
-		Cookies: any
-		InfoEnclosure: any
-		AccessDeclaration: any
-	},
+	Policies: PupilPolicies
 	Context: any,
-	MessageBox: {
-		Id: number
-		GlobalKey: string
-		Name: string
-	},
+	MessageBox: PupilMessageBox
 	ProfileId: string
 
 }
@@ -142,18 +150,8 @@ interface Period {
 	Id: number
 	Level: number
 	Number: number
-	Start: {
-		Timestamp: number
-		Date: string
-		DateDisplay: string
-		Time: string
-	},
-	End: {
-		Timestamp: number
-		Date: string
-		DateDisplay: string
-		Time: string
-	},
+	Start: VulcanHebeDate
+	End: VulcanHebeDate
 	Current: boolean
 	Last: boolean
 }
