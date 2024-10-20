@@ -1,6 +1,6 @@
 {
   "name": "hebece",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "eduVULCAN library for node.js",
   "main": "bin/index.js",
   "scripts": {

@@ -2,7 +2,7 @@ import * as signer from './signer';
 import * as crypto from 'crypto';
 import * as moment from 'moment';
 import * as strings from '../strings';
-import { KeyPair } from '.'
+import { KeyPair } from '../types';
 import { Pupil } from '../types';
 export default  async (keyPair:KeyPair, restUrl: string) => {
 	if (!restUrl) throw new Error('No REST URL provided!');

@@ -1,20 +1,6 @@
 import * as jwt from 'jose';
 import * as strings from '../strings';
-
-export interface ApiApContent {
-	Success: boolean,
-	Tokens: Array<string>,
-	Alias: string,
-	Email: string,
-	EmailCandidate: null,
-	GivenName: string,
-	Surname: string,
-	IsConsentAccepted: boolean,
-	CanAcceptConsent: boolean,
-	AccessToken: string,
-	ErrorMessage: null,
-	Capabilities: Array<string>,
-}
+import { ApiApContent } from '../types';
 /**
  * Parses /api/ap output
  * 

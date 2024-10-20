@@ -1,23 +1,42 @@
 import { VulcanHebeDate } from "./functions";
-
+// authentication
 export interface KeyPair {
 	fingerprint: string;
 	privateKey: string;
 	certificate: string;
 }
 
+export interface ApiApContent {
+	Success: boolean,
+	Tokens: Array<string>,
+	Alias: string,
+	Email: string,
+	EmailCandidate: null,
+	GivenName: string,
+	Surname: string,
+	IsConsentAccepted: boolean,
+	CanAcceptConsent: boolean,
+	AccessToken: string,
+	ErrorMessage: null,
+	Capabilities: Array<string>,
+}
+
+export interface RequestStatus {
+	Code: number,
+	Message: string
+}
+
+export interface JwtOutputEnvelope {
+	RestURL: string,
+	LoginId: null,
+	UserLogin: null,
+	Username: null,
+}
+
 export interface JwtOutput {
 	EnvelopeType: string,
-	Envelope: {
-		RestURL: string,
-		LoginId: null,
-		UserLogin: null,
-		Username: null,
-	},
-	Status: {
-		Code: number,
-		Message: string,
-	},
+	Envelope: JwtOutputEnvelope
+	Status: RequestStatus
 	RequestId: string,
 	Timestamp: number,
 	TimestampFormatted: string,
@@ -67,7 +86,7 @@ interface PupilConstituentUnit {
 	Short: string
 	Name: string
 	Address: string
-	Patron: string
+	Patron: string | null
 	SchoolTopic: string
 }
 
@@ -78,7 +97,7 @@ interface PupilUnit {
 	RestURL: string
 	Name: string
 	Address: string
-	Patron: string
+	Patron: string | null
 	DisplayName: string
 	SchoolTopic: string
 }
@@ -95,7 +114,7 @@ interface PupilData {
 	LoginId: number
 	LoginValue: string
 	FirstName: string
-	SecondName: string
+	SecondName: string | null
 	Surname: string
 	Sex: boolean
 }
@@ -136,7 +155,7 @@ interface PupilEnvelope {
 	Periods: Array<Period>
 	Journal: PupilJournal
 	Constraints: PupilConstraints
-	State: 0,
+	State: number,
 	Policies: PupilPolicies
 	Context: any,
 	MessageBox: PupilMessageBox
@@ -159,10 +178,7 @@ interface Period {
 export interface Pupil {
 	EnvelopeType: string,
 	Envelope: Array<PupilEnvelope>,
-	Status: {
-		Code: number,
-		Message: string,
-	},
+	Status: RequestStatus
 	RequestId: string,
 	Timestamp: number,
 	TimestampFormatted: string,

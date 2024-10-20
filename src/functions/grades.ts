@@ -1,7 +1,8 @@
 import * as signer from './signer';
 import * as moment from 'moment';
 import * as strings from '../strings';
-import { Grade, KeyPair } from '.'
+import { Grade } from '.'
+import { KeyPair } from '../types';
 import { Pupil } from '../types';
 
 export default async (keyPair:KeyPair, restUrl: string, pupil:Pupil) => {

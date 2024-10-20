@@ -3,7 +3,7 @@ import * as signer from './signer';
 import * as uuid from 'uuid';
 import * as strings from '../strings';
 import * as moment from 'moment';
-import { JwtOutput, KeyPair } from '.';
+import { KeyPair, JwtOutput } from '../types';
 export default async (apToken:string, keyPair:KeyPair) => {
 	const decodedJwt = jwt.decodeJwt(apToken);
 	const url = `https://lekcjaplus.vulcan.net.pl/${decodedJwt.tenant}/api/mobile/register/jwt`;

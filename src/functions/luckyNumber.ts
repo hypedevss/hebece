@@ -1,7 +1,8 @@
 import * as signer from './signer';
 import * as moment from 'moment';
 import * as strings from '../strings';
-import { KeyPair, LuckyNumber } from '.'
+import { LuckyNumber } from '.'
+import { KeyPair } from '../types';
 import { Pupil } from '../types';
 
 export default async (keyPair:KeyPair, restUrl: string, pupil:Pupil) => {
@@ -35,8 +36,5 @@ export default async (keyPair:KeyPair, restUrl: string, pupil:Pupil) => {
 	})
 	// @ts-ignore
 	const data:LuckyNumber = await aab.json();
-	return {
-		Day: data.Envelope.Day,
-		Number: data.Envelope.Number
-	}
+	return data as LuckyNumber;
 }

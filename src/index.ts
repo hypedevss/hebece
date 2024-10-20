@@ -2,7 +2,7 @@ import generateKeyPair from './lib/generateKeyPair';
 import registerJwt from './functions/registerJwt';
 import registerHebe from './functions/registerHebe';
 import luckyNumber from './functions/luckyNumber';
-import parseApiAp, { ApiApContent } from './utilities/parseApiAp';
+import parseApiAp from './utilities/parseApiAp';
 import ggrades from './functions/grades';
 import getHw from './functions/homeWork';
 import Keystore from './utilities/temporaryDb';
@@ -76,7 +76,7 @@ class VulcanHebeCe {
 	constituentId: number;
 	/**
 	 * Creates the main manager for VULCAN HebeCE API functionality.
-	 * @param keypair Your Keypair
+	 * @param keypair The Keypair to authenticate
 	 * @param restUrl The REST URL that the API should use
 	 * @returns 
 	 */
@@ -97,6 +97,8 @@ class VulcanHebeCe {
 		this.pupilId = pupilId;
 		this.pupilJson = pupilData;
 		this.constituentId = constituentId;
+
+		return true;
 	}
 	/**
 	 * Gets lucky number from the API.
