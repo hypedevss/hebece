@@ -3,6 +3,7 @@ import registerJwt from './functions/registerJwt';
 import registerHebe from './functions/registerHebe';
 import luckyNumber from './functions/luckyNumber';
 import parseApiAp, { ApiApContent } from './utilities/parseApiAp';
+import getHw from './functions/homeWork';
 import Keystore from './utilities/temporaryDb';
 import { JwtOutput, KeyPair, Pupil } from './types';
 class Keypair {
@@ -82,6 +83,9 @@ class VulcanHebeCe {
 		this.restUrl = restUrl;
 	}
 
+	/**
+	 * Connects to the VULCAN HebeCE API.
+	 */
 	async connect() {
 		const pupilData:Pupil = await registerHebe(this.keypair, this.restUrl);
 		const symbolNumber = pupilData.Envelope[0].Links.Symbol;
@@ -92,11 +96,25 @@ class VulcanHebeCe {
 		this.pupilJson = pupilData;
 		this.constituentId = constituentId;
 	}
-	
+	/**
+	 * Gets lucky number from the API.
+	 */
 	async getLuckyNumber() {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
 		const lucky = await luckyNumber(this.keypair, this.restUrl, this.pupilJson);
 		return lucky;
+	}
+
+	/**
+	 * Gets your homework from the API.
+	 * @param dateFrom The start of the date range
+	 * @param dateTo  The end of the date range
+	 * @returns 
+	 */
+	async getHomework(dateFrom: Date, dateTo: Date) {
+		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+		const homework = await getHw(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return homework;
 	}
 }
 
