@@ -6,8 +6,10 @@ import parseApiAp from './utilities/parseApiAp';
 import ggrades from './functions/grades';
 import getHw from './functions/homeWork';
 import Keystore from './utilities/temporaryDb';
+import fLessons from './functions/lessons';
+import changedLessons from './functions/changedLessons';
 import { JwtOutput, KeyPair, Pupil } from './types';
-import { Grade, Homework } from './functions';
+import { Grade, Homework, Lesson, LuckyNumber } from './functions';
 class Keypair {
 	/**
 	 * Creates a new Keypair manager for authentication with VULCAN HebeCE API.
@@ -97,11 +99,12 @@ class VulcanHebeCe {
 		this.pupilId = pupilId;
 		this.pupilJson = pupilData;
 		this.constituentId = constituentId;
-
 		return true;
 	}
 	/**
 	 * Gets lucky number from the API.
+	 * @async
+	 * @returns {LuckyNumber}
 	 */
 	async getLuckyNumber() {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
@@ -113,6 +116,7 @@ class VulcanHebeCe {
 	 * Gets your homework from the API.
 	 * @param dateFrom The start of the date range
 	 * @param dateTo  The end of the date range
+	 * @async
 	 * @returns {Homework}
 	 */
 	async getHomework(dateFrom: Date, dateTo: Date) {
@@ -122,12 +126,38 @@ class VulcanHebeCe {
 	}
 	/**
 	 * Gets your grades for the current period from the API.
+	 * @async
 	 * @returns {Grade}
 	 */
 	async getGrades() {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
 		const grades = await ggrades(this.keypair, this.restUrl, this.pupilJson);
 		return grades;
+	}
+	/**
+	 * Gets your timetable from the API.
+	 * @param dateFrom The start of the date range
+	 * @param dateTo The end of the date range
+	 * @async
+	 * @returns {Lesson}
+	 */
+	async getLessons(dateFrom: Date, dateTo: Date) {
+		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+		const lessons = await fLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return lessons;
+	}
+
+	/**
+	 * Gets your substitutions from the API.
+	 * @param dateFrom The start of the date range
+	 * @param dateTo The end of the date range
+	 * @async
+	 * @returns 
+	 */
+	async getChangedLessons(dateFrom: Date, dateTo: Date) {
+		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+		const lessons = await changedLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return lessons;
 	}
 }
 

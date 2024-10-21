@@ -11,9 +11,11 @@
 - [x] Authentication
 - [x] Multi student (Untested + half-assed)
 - [x] Grades
-- [ ] Lessons
+- [x] Lessons
 - [x] Homework
 - [ ] Attendance
+- [ ] Exams
+- [ ] Messages (RO)
 - [x] Lucky Number
 
 # Notice

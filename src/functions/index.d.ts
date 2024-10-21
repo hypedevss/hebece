@@ -115,3 +115,102 @@ export interface Grade {
 	Timestamp: number,
 	TimestampFormatted: string,
 }
+
+// Lessons
+
+interface LessonRoom {
+	Id: number
+	Code: string
+}
+
+interface TimeSlot {
+	Id: number
+	Start: string
+	End: string
+	Display: string
+	Position: number
+}
+
+interface LessonClass {
+	Id: number
+	Key: string
+	DisplayName: string
+	Symbol: string
+}
+
+interface LessonEnvelope {
+	Id: number
+	MergeChangeId: number | null
+	Event: any // Unknown
+	Date: VulcanHebeDate
+	Room: LessonRoom | null
+	TimeSlot: TimeSlot
+	Subject: Subject
+	TeacherPrimary: Teacher
+	TeacherSecondary: Teacher | null
+	TeacherSecondary2: Teacher | null
+	Change: LessonChange | null
+	Clazz: LessonClass
+	Distribution: any // Unknown
+	PupilAlias: any // Unknown
+	Visible: boolean
+	Parent: any // Unknown
+}
+
+export interface Lesson {
+	EnvelopeType: string,
+	Envelope: Array<LessonEnvelope>
+	Status: RequestStatus
+	RequestId: string,
+	Timestamp: number,
+	TimestampFormatted: string,
+}
+
+
+
+// Changed lessons
+interface LessonChange {
+	Id: number
+	Type: number
+	IsMerge: boolean
+	Separation: boolean
+}
+
+interface LessonChangeEnvelope {
+	Id: number
+	UnitId: number
+	ScheduleId: number
+	LessonDate: VulcanHebeDate
+	ChangeDate: VulcanHebeDate | null
+	Note: string
+	Reason: string | null
+	Event: any // Unknown
+	Room: LessonRoom | null
+	TimeSlot: TimeSlot | null
+	Subject: Subject
+	TeacherPrimary: Teacher
+	TeacherAbsenceReasonId: number
+	TeacherAbsenceEffectName: string
+	TeacherSecondary: Teacher | null
+	TeacherSecondaryAbsenceReasonId: number | null
+	TeacherSecondaryAbsenceEffectName: string | null
+	TeacherSecondary2: Teacher | null
+	TeacherSecondary2AbsenceReasonId: number | null
+	TeacherSecondary2AbsenceEffectName: string | null
+	Change: LessonChange
+	Clazz: LessonClass
+	Distribution: any // Unknown
+	ClassAbsence: boolean
+	NoRoom: boolean
+	DateModified: VulcanHebeDate
+	Description: string | null
+}
+
+export interface ChangedLesson {
+	EnvelopeType: string,
+	Envelope: Array<LessonChangeEnvelope>
+	Status: RequestStatus
+	RequestId: string,
+	Timestamp: number,
+	TimestampFormatted: string,
+}
