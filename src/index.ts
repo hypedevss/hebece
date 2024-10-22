@@ -8,8 +8,9 @@ import getHw from './functions/homeWork';
 import Keystore from './utilities/temporaryDb';
 import fLessons from './functions/lessons';
 import changedLessons from './functions/changedLessons';
+import attendance from './functions/attendance';
 import { JwtOutput, KeyPair, Pupil } from './types';
-import { Grade, Homework, Lesson, LuckyNumber } from './functions';
+import { Grade, Homework, Lesson, LuckyNumber, ChangedLesson, Attendance } from './functions';
 class Keypair {
 	/**
 	 * Creates a new Keypair manager for authentication with VULCAN HebeCE API.
@@ -152,12 +153,23 @@ class VulcanHebeCe {
 	 * @param dateFrom The start of the date range
 	 * @param dateTo The end of the date range
 	 * @async
-	 * @returns 
+	 * @returns {ChangedLesson}
 	 */
 	async getChangedLessons(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
 		const lessons = await changedLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
 		return lessons;
+	}
+	/**
+	 * Gets your attendance from the API.
+	 * @param dateFrom The start of the date range
+	 * @param dateTo The end of the date range
+	 * @returns {Attendance}
+	 */
+	async getAttendance(dateFrom: Date, dateTo: Date) {
+		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+		const attendanceobj = await attendance(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return attendanceobj;
 	}
 }
 

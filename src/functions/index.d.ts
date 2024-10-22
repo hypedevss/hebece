@@ -214,3 +214,57 @@ export interface ChangedLesson {
 	Timestamp: number,
 	TimestampFormatted: string,
 }
+
+// Attendance
+
+interface AttendancePresenceType {
+	Id: number
+	Symbol: string
+	Name: string
+	CategoryId: number
+	CategoryName: string
+	Position: number
+	Presence: boolean
+	Absence: boolean
+	Late: boolean
+	AbsenceJustified: boolean
+	Removed: boolean
+}
+
+interface AttendanceEnvelope {
+	LessonId: number
+	PresenceType: AttendancePresenceType
+	Collection: Array<any>
+	JustificationStatus: any | null
+	Id: number
+	LessonClassId: number
+	Day: VulcanHebeDate
+	CalculatePresence: boolean
+	GroupDefinition: boolean
+	PublicResources: null | any // Unknown
+	PrivateResources: null | any // Unknown
+	Replacement: boolean
+	DateModify: VulcanHebeDate
+	GlobalKey: string
+	Note: string | null
+	Topic: string | null
+	LessonNumber: number
+	LessonClassGlobalKey: string
+	TimeSlot: TimeSlot
+	Subject: Subject
+	TeacherPrimary: Teacher | null
+	TeacherMod: Teacher | null
+	Clazz: LessonClass
+	Distribution: any // Unknown
+	Visible: boolean
+	Parent: any // Unknown
+}
+
+export interface Attendance {
+	EnvelopeType: string,
+	Envelope: Array<AttendanceEnvelope>
+	Status: RequestStatus
+	RequestId: string,
+	Timestamp: number,
+	TimestampFormatted: string,
+}

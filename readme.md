@@ -13,7 +13,7 @@
 - [x] Grades
 - [x] Lessons
 - [x] Homework
-- [ ] Attendance
+- [x] Attendance
 - [ ] Exams
 - [ ] Messages (RO)
 - [x] Lucky Number
