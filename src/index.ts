@@ -9,6 +9,7 @@ import Keystore from './utilities/temporaryDb';
 import fLessons from './functions/lessons';
 import changedLessons from './functions/changedLessons';
 import attendance from './functions/attendance';
+import getexams from './functions/exams';
 import { JwtOutput, KeyPair, Pupil } from './types';
 import { Grade, Homework, Lesson, LuckyNumber, ChangedLesson, Attendance } from './functions';
 class Keypair {
@@ -170,6 +171,12 @@ class VulcanHebeCe {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
 		const attendanceobj = await attendance(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
 		return attendanceobj;
+	}
+
+	async getExams(dateFrom: Date, dateTo: Date) {
+		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+		const examsobj = await getexams(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return examsobj;
 	}
 }
 

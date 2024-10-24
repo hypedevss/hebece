@@ -268,3 +268,29 @@ export interface Attendance {
 	Timestamp: number,
 	TimestampFormatted: string,
 }
+
+// Exams
+
+interface ExamEnvelope {
+	Id: number
+	Key: string
+	Type: string
+	TypeId: number
+	Content: string
+	DateCreated: VulcanHebeDate
+	DateModify: VulcanHebeDate
+	Deadline: VulcanHebeDate
+	Creator: Teacher
+	Subject: Subject
+	PupilId: number
+	Didactics: null | any // Unknown
+}
+
+export interface Exam {
+	EnvelopeType: string,
+	Envelope: Array<ExamEnvelope>
+	Status: RequestStatus
+	RequestId: string,
+	Timestamp: number,
+	TimestampFormatted: string,
+}

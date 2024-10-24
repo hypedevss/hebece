@@ -4,6 +4,9 @@ import * as uuid from 'uuid';
 import * as strings from '../strings';
 import * as moment from 'moment';
 import { KeyPair, JwtOutput } from '../types';
+import buildHeaders from '../utilities/buildHeaders';
+import handleErrors from '../utilities/handleErrors';
+
 export default async (apToken:string, keyPair:KeyPair) => {
 	const decodedJwt = jwt.decodeJwt(apToken);
 	const url = `https://lekcjaplus.vulcan.net.pl/${decodedJwt.tenant}/api/mobile/register/jwt`;
@@ -31,31 +34,7 @@ export default async (apToken:string, keyPair:KeyPair) => {
 		"TimestampFormatted": dateFormatted,
 	};
 
-	const signature = signer.sign(
-		keyPair.fingerprint,
-		keyPair.privateKey,
-		JSON.stringify(body),
-		url,
-		dateUTC,
-	);
-
-	const headers = {
-		'accept': '*/*',
-		'accept-charset': 'UTF-8',
-		'accept-encoding': 'gzip',
-		'connection': 'Keep-Alive',
-		'content-type': 'application/json',
-		'digest': signature.digest,
-		'host': 'lekcjaplus.vulcan.net.pl',
-		'signature': signature.signature,
-		'user-agent': strings.USER_AGENT,
-		'vapi': strings.VAPI,
-		'vcanonicalurl': signature.canonicalUrl,
-		'vdate': dateUTC,
-		'vdevicemodel': strings.DEVICE_MODEL,
-		'vos': strings.OPERATING_SYSTEM,
-		'vversioncode': strings.VERSION_CODE,
-	};
+	const headers = buildHeaders(keyPair, body, date, url);
 
 	const options = {
 		method: 'POST',
@@ -66,5 +45,6 @@ export default async (apToken:string, keyPair:KeyPair) => {
 	const response = await fetch(url, options);
 	// @ts-ignore
 	const data:JwtOutput = await response.json();
+	handleErrors(data);
 	return data;
 };

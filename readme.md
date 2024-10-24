@@ -14,7 +14,7 @@
 - [x] Lessons
 - [x] Homework
 - [x] Attendance
-- [ ] Exams
+- [x] Exams
 - [ ] Messages (RO)
 - [x] Lucky Number
 
