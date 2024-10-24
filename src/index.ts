@@ -11,7 +11,9 @@ import changedLessons from './functions/changedLessons';
 import attendance from './functions/attendance';
 import getexams from './functions/exams';
 import { JwtOutput, KeyPair, Pupil } from './types';
-import { Grade, Homework, Lesson, LuckyNumber, ChangedLesson, Attendance } from './functions';
+import messagesGet from './functions/messagesGet';
+import addressbook from './functions/addressbook';
+import { Grade, Homework, Lesson, LuckyNumber, ChangedLesson, Attendance, Exam, Message, AddressBook } from './functions';
 class Keypair {
 	/**
 	 * Creates a new Keypair manager for authentication with VULCAN HebeCE API.
@@ -173,10 +175,43 @@ class VulcanHebeCe {
 		return attendanceobj;
 	}
 
+	/**
+	 * Gets your exams from the API.
+	 * @param dateFrom The start of the date range
+	 * @param dateTo The end of the date range
+	 * @returns {Exam}
+	 */
 	async getExams(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
 		const examsobj = await getexams(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
 		return examsobj;
+	}
+
+	messages = {
+		/**
+		 * Gets your messages from the API.
+		 * 
+		 * Messages are automatically sorted from newest to oldest.
+		 * @param type The type of the message (0 = received, 1 = sent, 2 = deleted)
+		 * @param amount How many messages do you want to fetch
+		 * @returns {Message}
+		 */
+		get: async (type:Exclude<number, 0 | 1 |2>, amount:number) => {
+			if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+			const messages = await messagesGet(this.keypair, this.restUrl, this.pupilJson, type, amount);
+			return messages;
+		},
+		/**
+		 * Gets the address book from the API.
+		 * 
+		 * Useful to send a message. Contains MessageBoxes IDs that you can send a message to.
+		 * @returns {AddressBook}
+		 */
+		getAddressBook: async () => {
+			if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
+			const addrbook = await addressbook(this.keypair, this.restUrl, this.pupilJson);
+			return addrbook;
+		}
 	}
 }
 

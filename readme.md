@@ -15,7 +15,8 @@
 - [x] Homework
 - [x] Attendance
 - [x] Exams
-- [ ] Messages (RO)
+- [x] Messages (Reading)
+- [ ] Messages (Sending)
 - [x] Lucky Number
 
 # Notice

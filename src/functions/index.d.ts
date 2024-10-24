@@ -294,3 +294,63 @@ export interface Exam {
 	Timestamp: number,
 	TimestampFormatted: string,
 }
+
+// Messages
+
+interface MessageExtras {
+	DisplayedClass: string
+}
+
+interface MessageUser {
+	GlobalKey: string
+	Name: string
+	HasRead: null | number
+	Extras: MessageExtras
+}
+
+interface MessageAttachment {
+	Name: string
+	Link: string
+}
+
+interface MessageEnvelope {
+	Id: string
+	GlobalKey: string
+	ThreadKey: string
+	Subject: string
+	Content: string
+	DateSent: VulcanHebeDate
+	DateRead: VulcanHebeDate
+	Status: number
+	Sender: MessageUser
+	Receiver: Array<MessageUser>
+	Attachments: Array<MessageAttachment> | Array<any>
+	Importance: number
+	Withdrawn: boolean
+}
+
+export interface Message {
+	EnvelopeType: string,
+	Envelope: Array<MessageEnvelope>
+	Status: RequestStatus
+	RequestId: string,
+	Timestamp: number,
+	TimestampFormatted: string,
+}
+
+// Address book
+
+interface AddressBookEnvelope {
+	GlobalKey: string
+	Name: string
+	Group: string 
+}
+
+export interface AddressBook {
+	EnvelopeType: string,
+	Envelope: Array<AddressBookEnvelope>
+	Status: RequestStatus
+	RequestId: string,
+	Timestamp: number,
+	TimestampFormatted: string,
+}
