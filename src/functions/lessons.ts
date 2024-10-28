@@ -1,5 +1,4 @@
-import * as signer from './signer';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as strings from '../strings';
 import { KeyPair } from '../types';
 import { Pupil } from '../types';

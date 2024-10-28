@@ -1,12 +1,14 @@
 {
   "name": "hebece",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "eduVULCAN library for node.js",
   "main": "bin/index.js",
   "scripts": {
     "build": "tsc",
     "clean": "rm -r ./bin",
-    "upload": "npm run clean && npm run build && npm publish"
+    "type": "cp ./src/types.d.ts ./bin/ && cp ./src/functions/index.d.ts ./bin/functions",
+    "test": "npm run clean && npm run build && npm run type",
+    "upload": "npm run clean && npm run build && npm run type && npm publish"
   },
   "keywords": [],
   "author": "xiaom1hype",

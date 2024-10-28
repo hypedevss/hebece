@@ -1,8 +1,7 @@
 import * as jwt from 'jose';
-import * as signer from './signer';
 import * as uuid from 'uuid';
 import * as strings from '../strings';
-import * as moment from 'moment';
+import moment from 'moment';
 import { KeyPair, JwtOutput } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';

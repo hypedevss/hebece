@@ -112,8 +112,8 @@ class VulcanHebeCe {
 	 */
 	async getLuckyNumber() {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const lucky = await luckyNumber(this.keypair, this.restUrl, this.pupilJson);
-		return lucky;
+		const lucky:LuckyNumber = await luckyNumber(this.keypair, this.restUrl, this.pupilJson);
+		return lucky as LuckyNumber;
 	}
 
 	/**
@@ -125,8 +125,8 @@ class VulcanHebeCe {
 	 */
 	async getHomework(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const homework = await getHw(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
-		return homework;
+		const homework:Homework = await getHw(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return homework as Homework;
 	}
 	/**
 	 * Gets your grades for the current period from the API.
@@ -135,8 +135,8 @@ class VulcanHebeCe {
 	 */
 	async getGrades() {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const grades = await ggrades(this.keypair, this.restUrl, this.pupilJson);
-		return grades;
+		const grades:Grade = await ggrades(this.keypair, this.restUrl, this.pupilJson);
+		return grades as Grade;
 	}
 	/**
 	 * Gets your timetable from the API.
@@ -147,8 +147,8 @@ class VulcanHebeCe {
 	 */
 	async getLessons(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const lessons = await fLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
-		return lessons;
+		const lessons:Lesson = await fLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return lessons as Lesson;
 	}
 
 	/**
@@ -160,8 +160,8 @@ class VulcanHebeCe {
 	 */
 	async getChangedLessons(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const lessons = await changedLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
-		return lessons;
+		const lessons:ChangedLesson = await changedLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return lessons as ChangedLesson;
 	}
 	/**
 	 * Gets your attendance from the API.
@@ -171,8 +171,8 @@ class VulcanHebeCe {
 	 */
 	async getAttendance(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const attendanceobj = await attendance(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
-		return attendanceobj;
+		const attendanceobj:Attendance = await attendance(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return attendanceobj as Attendance;
 	}
 
 	/**
@@ -183,8 +183,8 @@ class VulcanHebeCe {
 	 */
 	async getExams(dateFrom: Date, dateTo: Date) {
 		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const examsobj = await getexams(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
-		return examsobj;
+		const examsobj:Exam = await getexams(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		return examsobj as Exam;
 	}
 
 	messages = {
@@ -198,8 +198,8 @@ class VulcanHebeCe {
 		 */
 		get: async (type:Exclude<number, 0 | 1 |2>, amount:number) => {
 			if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-			const messages = await messagesGet(this.keypair, this.restUrl, this.pupilJson, type, amount);
-			return messages;
+			const messages:Message = await messagesGet(this.keypair, this.restUrl, this.pupilJson, type, amount);
+			return messages as Message;
 		},
 		/**
 		 * Gets the address book from the API.
@@ -209,8 +209,8 @@ class VulcanHebeCe {
 		 */
 		getAddressBook: async () => {
 			if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-			const addrbook = await addressbook(this.keypair, this.restUrl, this.pupilJson);
-			return addrbook;
+			const addrbook:AddressBook = await addressbook(this.keypair, this.restUrl, this.pupilJson);
+			return addrbook as AddressBook;
 		}
 	}
 }
