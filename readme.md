@@ -19,6 +19,10 @@
 - [ ] Messages (Sending)
 - [x] Lucky Number
 
+# About messages and the paid eduVULCAN app version
+If you didn't pay for the extended version of the mobile app, functions related for messages will return `EDUVULCAN_PREMIUM` error.
+Please use [this module](https://npmjs.com/@hebece/addon-prometheusweb).
+
 # Notice
 This library is highly experimental, if you want to contribute, you can contribute.
 
