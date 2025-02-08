@@ -9,7 +9,7 @@
 # Features
 
 - [x] Authentication
-- [x] Multi student (Untested + half-assed)
+- [x] Multi student (Untested, should work, if not please let me know)
 - [x] Grades
 - [x] Lessons
 - [x] Homework

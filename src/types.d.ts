@@ -33,6 +33,15 @@ export interface JwtOutputEnvelope {
 	Username: null,
 }
 
+export interface Student {
+	PupilId: number,
+	SymbolId: string
+	FirstName: string,
+	LastName: string,
+	RestURL: string,
+	Pupil: PupilEnvelope
+}
+
 export interface JwtOutput {
 	EnvelopeType: string,
 	Envelope: JwtOutputEnvelope
