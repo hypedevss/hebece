@@ -1,15 +1,17 @@
 import * as jwt from 'jose';
 import * as strings from '../strings';
 import { ApiApContent } from '../types';
+import { load} from 'cheerio';
+
 /**
  * Parses /api/ap output
  * 
  * @param apContent The content of https://eduvulcan.pl/api/ap
- * @returns {object}
+ * @returns {ApiApContent}
  */
 export default async (apContent:string) =>  {
 	// parse /api/ap output
-	let apJson:ApiApContent= JSON.parse(apContent.split('value=\'')[1].split('\' />')[0]);
+	let apJson:ApiApContent= JSON.parse(load(apContent)("input[id='ap']").attr("value"));
 	const validationArray = [];
 	// check for expired tokens
 	apJson.Tokens.forEach(token => {
