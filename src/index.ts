@@ -10,7 +10,7 @@ import fLessons from './functions/lessons';
 import changedLessons from './functions/changedLessons';
 import attendance from './functions/attendance';
 import getexams from './functions/exams';
-import { JwtOutput, KeyPair, Pupil } from './types';
+import { JwtOutput, KeyPair, Pupil, PupilEnvelope, Student } from './types';
 import messagesGet from './functions/messagesGet';
 import addressbook from './functions/addressbook';
 import { Grade, Homework, Lesson, LuckyNumber, ChangedLesson, Attendance, Exam, Message, AddressBook } from './functions';
@@ -39,10 +39,10 @@ class Keypair {
 	}
 };
 
+let restUrls = [];
 class VulcanJwtRegister {
 	keypair: KeyPair;
 	apiap: string;
-	tokenIndex: number;
 	/**
 	 * Creates a manager for authentication with VULCAN HebeCE API.
 	 * 
@@ -52,10 +52,9 @@ class VulcanJwtRegister {
 	 * @returns {JwtOutput}
 	 */
 
-	constructor(keypair: KeyPair, apiap: string, tokenIndex: number) {
+	constructor(keypair: KeyPair, apiap: string) {
 		this.keypair = keypair;
 		this.apiap = apiap;
-		this.tokenIndex = tokenIndex;
 	};
 	/**
 	 * Registers your Keypair with a JWT to send requests to VULCAN HebeCE API.
@@ -65,20 +64,20 @@ class VulcanJwtRegister {
 	async init() {
 		const keypair = this.keypair;
 		const apiap = this.apiap;
-		const tokenIndex = this.tokenIndex;
-		
 		const parsedAp = await parseApiAp(apiap);
-		const token = parsedAp.Tokens[tokenIndex];
-		const jwt:JwtOutput = await registerJwt(token, keypair);
+		const token = parsedAp.Tokens
+		const jwt:JwtOutput[] = await registerJwt(token, keypair);
+		jwt.forEach(j => {
+			restUrls.push(j.Envelope.RestURL);
+		})
 		return jwt;
 	}
 }
 class VulcanHebeCe {
 	keypair: KeyPair;
-	restUrl: string;
 	symbolNumber: string;
 	pupilId: number;
-	pupilJson: Pupil;
+	pupilJson: PupilEnvelope;
 	constituentId: number;
 	/**
 	 * Creates the main manager for VULCAN HebeCE API functionality.
@@ -86,33 +85,64 @@ class VulcanHebeCe {
 	 * @param restUrl The REST URL that the API should use
 	 * @returns 
 	 */
-	constructor(keypair, restUrl) {
+	constructor(keypair) {
 		this.keypair = keypair;
-		this.restUrl = restUrl;
 	}
+	readonly students:Student[] = [];
+	selectedStudent:Student = null;
 
 	/**
 	 * Connects to the VULCAN HebeCE API.
 	 */
 	async connect() {
-		const pupilData:Pupil = await registerHebe(this.keypair, this.restUrl);
-		const symbolNumber = pupilData.Envelope[0].Links.Symbol;
-		const pupilId = pupilData.Envelope[0].Pupil.Id;
-		const constituentId = pupilData.Envelope[0].ConstituentUnit.Id;
-		this.symbolNumber = symbolNumber;
-		this.pupilId = pupilId;
-		this.pupilJson = pupilData;
-		this.constituentId = constituentId;
+		const deDuped:string[] = [...new Set(restUrls)];
+		for (const url of deDuped) {
+			const pupilData:Pupil = await registerHebe(this.keypair, url);
+			for (const pupil of pupilData.Envelope) {
+				const studentObject: Student = {
+					PupilId: pupil.Pupil.Id,
+					SymbolId: pupil.Unit.Symbol,
+					FirstName: pupil.Pupil.FirstName,
+					LastName: pupil.Pupil.Surname,
+					RestURL: url,
+					Pupil: pupil
+				}
+				this.students.push(studentObject);
+			}
+		}
 		return true;
 	}
+	/**
+	 * Lists students assigned to current account
+	 * @async
+	 * @returns {Student[]}
+	 */
+	async listStudents() {
+		this.checkConnection(false);
+		return this.students;
+	}
+	/**
+	 * Selects a student
+	 * @async
+	 * @param pupilId The ID of the student to select. Not providing one will select first student.
+	 */
+	async selectStudent(pupilId: number = 0) {
+		this.checkConnection(false);
+		this.selectedStudent = this.students.find(s => s.PupilId === pupilId) || this.students[0];
+		this.pupilId = this.selectedStudent.PupilId;
+		this.pupilJson = this.selectedStudent.Pupil;
+		this.constituentId = this.selectedStudent.Pupil.ConstituentUnit.Id;
+		return this.selectedStudent;
+	}
+
 	/**
 	 * Gets lucky number from the API.
 	 * @async
 	 * @returns {LuckyNumber}
 	 */
 	async getLuckyNumber() {
-		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const lucky:LuckyNumber = await luckyNumber(this.keypair, this.restUrl, this.pupilJson);
+		this.checkConnection();
+		const lucky:LuckyNumber = await luckyNumber(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
 		return lucky as LuckyNumber;
 	}
 
@@ -124,8 +154,8 @@ class VulcanHebeCe {
 	 * @returns {Homework}
 	 */
 	async getHomework(dateFrom: Date, dateTo: Date) {
-		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const homework:Homework = await getHw(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		this.checkConnection();
+		const homework:Homework = await getHw(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
 		return homework as Homework;
 	}
 	/**
@@ -134,8 +164,8 @@ class VulcanHebeCe {
 	 * @returns {Grade}
 	 */
 	async getGrades() {
-		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const grades:Grade = await ggrades(this.keypair, this.restUrl, this.pupilJson);
+		this.checkConnection();
+		const grades:Grade = await ggrades(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
 		return grades as Grade;
 	}
 	/**
@@ -146,8 +176,8 @@ class VulcanHebeCe {
 	 * @returns {Lesson}
 	 */
 	async getLessons(dateFrom: Date, dateTo: Date) {
-		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const lessons:Lesson = await fLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		this.checkConnection();
+		const lessons:Lesson = await fLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
 		return lessons as Lesson;
 	}
 
@@ -159,8 +189,8 @@ class VulcanHebeCe {
 	 * @returns {ChangedLesson}
 	 */
 	async getChangedLessons(dateFrom: Date, dateTo: Date) {
-		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const lessons:ChangedLesson = await changedLessons(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		this.checkConnection();
+		const lessons:ChangedLesson = await changedLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
 		return lessons as ChangedLesson;
 	}
 	/**
@@ -170,8 +200,8 @@ class VulcanHebeCe {
 	 * @returns {Attendance}
 	 */
 	async getAttendance(dateFrom: Date, dateTo: Date) {
-		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const attendanceobj:Attendance = await attendance(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		this.checkConnection();
+		const attendanceobj:Attendance = await attendance(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
 		return attendanceobj as Attendance;
 	}
 
@@ -182,8 +212,8 @@ class VulcanHebeCe {
 	 * @returns {Exam}
 	 */
 	async getExams(dateFrom: Date, dateTo: Date) {
-		if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-		const examsobj:Exam = await getexams(this.keypair, this.restUrl, this.pupilJson, dateFrom, dateTo);
+		this.checkConnection();
+		const examsobj:Exam = await getexams(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
 		return examsobj as Exam;
 	}
 
@@ -197,8 +227,8 @@ class VulcanHebeCe {
 		 * @returns {Message}
 		 */
 		get: async (type:Exclude<number, 0 | 1 |2>, amount:number) => {
-			if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-			const messages:Message = await messagesGet(this.keypair, this.restUrl, this.pupilJson, type, amount);
+			this.checkConnection();
+			const messages:Message = await messagesGet(this.keypair, this.selectedStudent.RestURL, this.pupilJson, type, amount);
 			return messages as Message;
 		},
 		/**
@@ -208,10 +238,20 @@ class VulcanHebeCe {
 		 * @returns {AddressBook}
 		 */
 		getAddressBook: async () => {
-			if (!this.symbolNumber || !this.pupilId || !this.constituentId) throw new Error(`You are not connected! Maybe .connect()?`)
-			const addrbook:AddressBook = await addressbook(this.keypair, this.restUrl, this.pupilJson);
+			this.checkConnection();
+			const addrbook:AddressBook = await addressbook(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
 			return addrbook as AddressBook;
 		}
+	}
+	private checkConnection(checkStudents: boolean = true) {
+		if (this.students.length === 0) throw new Error(`You are not connected! Maybe .connect()?`)
+		if (this.selectedStudent === null && checkStudents) throw new Error(`You have not selected a student! Maybe .selectStudent()?`)
+	}
+}
+
+class RestUrlManager {
+	async setRestUrls(rests: string[]) {
+		restUrls = rests;
 	}
 }
 
@@ -219,5 +259,6 @@ export {
 	Keypair,
 	Keystore,
 	VulcanJwtRegister,
-	VulcanHebeCe
+	VulcanHebeCe,
+	RestUrlManager
 };
