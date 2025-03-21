@@ -2,19 +2,18 @@ import * as jwt from 'jose';
 import * as uuid from 'uuid';
 import * as strings from '../strings';
 import moment from 'moment';
-import { KeyPair, JwtOutput } from '../types';
+import { KeyPair, VulcanApiResponse, JwtOutputEnvelope } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
 
-export default async (apToken:string[], keyPair:KeyPair) => {
-	const decodedJwts = apToken.map(token => jwt.decodeJwt(token));	
-	const urls = decodedJwts.map(token => `https://lekcjaplus.vulcan.net.pl/${token.tenant}/api/mobile/register/jwt`)
+export default async (apToken:string[], baseUrls: string[], keyPair:KeyPair) => {	
 	const date = new Date();
 	const dateFormatted = moment(date).format('YYYY-MM-DD HH:mm:ss');
 	const unixTimestamp = Math.floor(date.getTime() / 1000);
+	const properUrls = baseUrls.map(x => `${x}/api/mobile/register/jwt`)
 	const body = {
 		"AppName": "DzienniczekPlus 3.0",
-		"AppVersion": "24.09.04 (G)",
+		"AppVersion": `${strings.APP_VERSION}`,
 		"Envelope": {
 			"OS": strings.OPERATING_SYSTEM,
 			"DeviceModel": strings.DEVICE_MODEL,
@@ -30,8 +29,8 @@ export default async (apToken:string[], keyPair:KeyPair) => {
 		"Timestamp": unixTimestamp,
 		"TimestampFormatted": dateFormatted,
 	};
-	const jwtOutputs = [];
-	urls.forEach(async url => {
+	const jwtOutputs:JwtOutputEnvelope[] = [];
+	for (const url of properUrls) {
 		const headers = buildHeaders(keyPair, body, date, url);
 
 		const options = {
@@ -42,10 +41,9 @@ export default async (apToken:string[], keyPair:KeyPair) => {
 	
 		const response = await fetch(url, options);
 		// @ts-ignore
-		const data:JwtOutput = await response.json();
+		const data:VulcanApiResponse<JwtOutputEnvelope> = await response.json();
 		handleErrors(data);
-		jwtOutputs.push(data);
-	})
-
+		jwtOutputs.push(data.Envelope);
+	}
 	return jwtOutputs;
 };

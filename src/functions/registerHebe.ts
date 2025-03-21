@@ -1,6 +1,6 @@
 import * as strings from '../strings';
 import { KeyPair } from '../types';
-import { Pupil } from '../types';
+import { VulcanApiResponse, PupilEnvelope } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
 
@@ -15,7 +15,7 @@ export default  async (keyPair:KeyPair, restUrl: string) => {
 		method: 'GET',
 		headers: headers,
 	});
-	const data:Pupil = await aab.json();
+	const data:VulcanApiResponse<Array<PupilEnvelope>> = await aab.json();
 	handleErrors(data);
-	return data as Pupil;
+	return data as VulcanApiResponse<Array<PupilEnvelope>>;
 };

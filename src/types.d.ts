@@ -1,4 +1,3 @@
-import { VulcanHebeDate } from "./functions";
 // authentication
 export interface KeyPair {
 	fingerprint: string;
@@ -42,9 +41,9 @@ export interface Student {
 	Pupil: PupilEnvelope
 }
 
-export interface JwtOutput {
+export interface VulcanApiResponse<T> {
 	EnvelopeType: string,
-	Envelope: JwtOutputEnvelope
+	Envelope: T
 	Status: RequestStatus
 	RequestId: string,
 	Timestamp: number,
@@ -184,12 +183,277 @@ interface Period {
 	Last: boolean
 }
 
-export interface Pupil {
-	EnvelopeType: string,
-	Envelope: Array<PupilEnvelope>,
-	Status: RequestStatus
-	RequestId: string,
-	Timestamp: number,
-	TimestampFormatted: string,
+// Lucky Number
+interface LuckyNumberEnvelope {
+	Day: string,
+	Number: number,
+}
 
+// Homework
+
+export interface VulcanHebeDate {
+	Timestamp: number,
+	Date: string,
+	DateDisplay: string,
+	Time: string,
+}
+
+interface Teacher {
+	Id: number
+	Surname: string
+	Name: string
+	DisplayName: string
+}
+
+interface Subject {
+	Id: number
+	Key: string
+	Name: string
+	Kod: string
+	Position: number
+}
+
+interface HomeworkEnvelope {
+	Id: number
+	Key: string
+	IdPupil: number
+	IdHomework: number
+	Content: string
+	IsAnwserRequired: boolean
+	DateCreated: VulcanHebeDate
+	DateModified: VulcanHebeDate
+	Date: VulcanHebeDate
+	AnwserDate: VulcanHebeDate
+	Deadline: VulcanHebeDate
+	Creator: Teacher,
+	Subject: Subject
+	Attachments: Array<any>
+	Didactics: any
+	AnwserDidactics: any
+}
+
+// Grades
+
+interface GradeCategory {
+	Id: number
+	Name: string
+	Code: string
+}
+
+interface GradeColumn {
+	Id: number
+	Key: string
+	PeriodId: number
+	Name: string
+	Code: string
+	Group: string
+	Number: number
+	Color: number
+	Weight: number
+	Subject: Subject
+	Category: GradeCategory
+}
+
+
+interface GradeEnvelope {
+	Id: number
+	Key: string
+	Pupilid: number
+	ContentRaw: string
+	Content: string
+	Comment: string
+	Value: any
+	Numerator: number
+	Denominator: number
+	DateCreated: VulcanHebeDate
+	DateModify: VulcanHebeDate
+	Creator: Teacher
+	Modifier: Teacher
+	Column: GradeColumn
+	Category: GradeCategory
+}
+
+// Lessons
+
+interface LessonRoom {
+	Id: number
+	Code: string
+}
+
+interface TimeSlot {
+	Id: number
+	Start: string
+	End: string
+	Display: string
+	Position: number
+}
+
+interface LessonClass {
+	Id: number
+	Key: string
+	DisplayName: string
+	Symbol: string
+}
+
+interface LessonEnvelope {
+	Id: number
+	MergeChangeId: number | null
+	Event: any // Unknown
+	Date: VulcanHebeDate
+	Room: LessonRoom | null
+	TimeSlot: TimeSlot
+	Subject: Subject
+	TeacherPrimary: Teacher
+	TeacherSecondary: Teacher | null
+	TeacherSecondary2: Teacher | null
+	Change: LessonChange | null
+	Clazz: LessonClass
+	Distribution: any // Unknown
+	PupilAlias: any // Unknown
+	Visible: boolean
+	Parent: any // Unknown
+}
+
+
+
+// Changed lessons
+interface LessonChange {
+	Id: number
+	Type: number
+	IsMerge: boolean
+	Separation: boolean
+}
+
+interface LessonChangeEnvelope {
+	Id: number
+	UnitId: number
+	ScheduleId: number
+	LessonDate: VulcanHebeDate
+	ChangeDate: VulcanHebeDate | null
+	Note: string
+	Reason: string | null
+	Event: any // Unknown
+	Room: LessonRoom | null
+	TimeSlot: TimeSlot | null
+	Subject: Subject
+	TeacherPrimary: Teacher
+	TeacherAbsenceReasonId: number
+	TeacherAbsenceEffectName: string
+	TeacherSecondary: Teacher | null
+	TeacherSecondaryAbsenceReasonId: number | null
+	TeacherSecondaryAbsenceEffectName: string | null
+	TeacherSecondary2: Teacher | null
+	TeacherSecondary2AbsenceReasonId: number | null
+	TeacherSecondary2AbsenceEffectName: string | null
+	Change: LessonChange
+	Clazz: LessonClass
+	Distribution: any // Unknown
+	ClassAbsence: boolean
+	NoRoom: boolean
+	DateModified: VulcanHebeDate
+	Description: string | null
+}
+
+// Attendance
+
+interface AttendancePresenceType {
+	Id: number
+	Symbol: string
+	Name: string
+	CategoryId: number
+	CategoryName: string
+	Position: number
+	Presence: boolean
+	Absence: boolean
+	Late: boolean
+	AbsenceJustified: boolean
+	Removed: boolean
+}
+
+interface AttendanceEnvelope {
+	LessonId: number
+	PresenceType: AttendancePresenceType
+	Collection: Array<any>
+	JustificationStatus: any | null
+	Id: number
+	LessonClassId: number
+	Day: VulcanHebeDate
+	CalculatePresence: boolean
+	GroupDefinition: boolean
+	PublicResources: null | any // Unknown
+	PrivateResources: null | any // Unknown
+	Replacement: boolean
+	DateModify: VulcanHebeDate
+	GlobalKey: string
+	Note: string | null
+	Topic: string | null
+	LessonNumber: number
+	LessonClassGlobalKey: string
+	TimeSlot: TimeSlot
+	Subject: Subject
+	TeacherPrimary: Teacher | null
+	TeacherMod: Teacher | null
+	Clazz: LessonClass
+	Distribution: any // Unknown
+	Visible: boolean
+	Parent: any // Unknown
+}
+
+// Exams
+
+interface ExamEnvelope {
+	Id: number
+	Key: string
+	Type: string
+	TypeId: number
+	Content: string
+	DateCreated: VulcanHebeDate
+	DateModify: VulcanHebeDate
+	Deadline: VulcanHebeDate
+	Creator: Teacher
+	Subject: Subject
+	PupilId: number
+	Didactics: null | any // Unknown
+}
+
+// Messages
+
+interface MessageExtras {
+	DisplayedClass: string
+}
+
+interface MessageUser {
+	GlobalKey: string
+	Name: string
+	HasRead: null | number
+	Extras: MessageExtras
+}
+
+interface MessageAttachment {
+	Name: string
+	Link: string
+}
+
+interface MessageEnvelope {
+	Id: string
+	GlobalKey: string
+	ThreadKey: string
+	Subject: string
+	Content: string
+	DateSent: VulcanHebeDate
+	DateRead: VulcanHebeDate
+	Status: number
+	Sender: MessageUser
+	Receiver: Array<MessageUser>
+	Attachments: Array<MessageAttachment> | Array<any>
+	Importance: number
+	Withdrawn: boolean
+}
+
+// Address book
+
+interface AddressBookEnvelope {
+	GlobalKey: string
+	Name: string
+	Group: string 
 }

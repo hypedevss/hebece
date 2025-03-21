@@ -23,6 +23,9 @@
 If you didn't pay for the extended version of the mobile app, functions related for messages will return `EDUVULCAN_PREMIUM` error.
 Please use [this module](https://npmjs.com/@hebece/addon-prometheusweb).
 
+# v0.2.0 NOTICE
+Version 0.2.0 is a major update that changed authentication functions, please read the [docs](https://hebece.hypedevs.lol).
+
 # Notice
 This library is highly experimental, if you want to contribute, you can contribute.
 

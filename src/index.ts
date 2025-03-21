@@ -10,10 +10,11 @@ import fLessons from './functions/lessons';
 import changedLessons from './functions/changedLessons';
 import attendance from './functions/attendance';
 import getexams from './functions/exams';
-import { JwtOutput, KeyPair, Pupil, PupilEnvelope, Student } from './types';
+import { JwtOutputEnvelope, KeyPair, LuckyNumberEnvelope, PupilEnvelope, Student, VulcanApiResponse, HomeworkEnvelope, GradeEnvelope, ExamEnvelope, LessonEnvelope, LessonChangeEnvelope, AttendanceEnvelope, MessageEnvelope, AddressBookEnvelope } from './types';
 import messagesGet from './functions/messagesGet';
+import * as strings from './strings';
 import addressbook from './functions/addressbook';
-import { Grade, Homework, Lesson, LuckyNumber, ChangedLesson, Attendance, Exam, Message, AddressBook } from './functions';
+import { decodeJwt } from 'jose';
 class Keypair {
 	/**
 	 * Creates a new Keypair manager for authentication with VULCAN HebeCE API.
@@ -43,33 +44,34 @@ let restUrls = [];
 class VulcanJwtRegister {
 	keypair: KeyPair;
 	apiap: string;
+	autoRefreshAp: boolean;
 	/**
 	 * Creates a manager for authentication with VULCAN HebeCE API.
 	 * 
 	 * @param keypair The Keypair to authenticate
 	 * @param apiap The /api/ap content
-	 * @param tokenIndex What token should be authenticated? (Multistudent)
+	 * @param autoRefreshAp Should new JWT tokens be fetched automatically?
 	 * @returns {JwtOutput}
 	 */
 
-	constructor(keypair: KeyPair, apiap: string) {
+	constructor(keypair: KeyPair, apiap: string, autoRefreshAp: boolean = true) {
 		this.keypair = keypair;
 		this.apiap = apiap;
+		this.autoRefreshAp = autoRefreshAp
 	};
 	/**
 	 * Registers your Keypair with a JWT to send requests to VULCAN HebeCE API.
 	 * 
-	 * @async 
+	 * @async
 	 */
 	async init() {
 		const keypair = this.keypair;
 		const apiap = this.apiap;
-		const parsedAp = await parseApiAp(apiap);
+		const parsedAp = await parseApiAp(apiap, this.autoRefreshAp);
 		const token = parsedAp.Tokens
-		const jwt:JwtOutput[] = await registerJwt(token, keypair);
-		jwt.forEach(j => {
-			restUrls.push(j.Envelope.RestURL);
-		})
+		const _restUrls = token.map(token => `${strings.BASE_URL}${decodeJwt(token).tenant}`)
+		const jwt = await registerJwt(parsedAp.Tokens, _restUrls, keypair);
+		restUrls = _restUrls;
 		return jwt;
 	}
 }
@@ -82,7 +84,6 @@ class VulcanHebeCe {
 	/**
 	 * Creates the main manager for VULCAN HebeCE API functionality.
 	 * @param keypair The Keypair to authenticate
-	 * @param restUrl The REST URL that the API should use
 	 * @returns 
 	 */
 	constructor(keypair) {
@@ -97,7 +98,7 @@ class VulcanHebeCe {
 	async connect() {
 		const deDuped:string[] = [...new Set(restUrls)];
 		for (const url of deDuped) {
-			const pupilData:Pupil = await registerHebe(this.keypair, url);
+			const pupilData = await registerHebe(this.keypair, url);
 			for (const pupil of pupilData.Envelope) {
 				const studentObject: Student = {
 					PupilId: pupil.Pupil.Id,
@@ -132,18 +133,17 @@ class VulcanHebeCe {
 		this.pupilId = this.selectedStudent.PupilId;
 		this.pupilJson = this.selectedStudent.Pupil;
 		this.constituentId = this.selectedStudent.Pupil.ConstituentUnit.Id;
-		return this.selectedStudent;
 	}
 
 	/**
 	 * Gets lucky number from the API.
 	 * @async
-	 * @returns {LuckyNumber}
+	 * @returns {VulcanApiResponse<LuckyNumberEnvelope>}
 	 */
 	async getLuckyNumber() {
 		this.checkConnection();
-		const lucky:LuckyNumber = await luckyNumber(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
-		return lucky as LuckyNumber;
+		const lucky:VulcanApiResponse<LuckyNumberEnvelope> = await luckyNumber(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
+		return lucky;
 	}
 
 	/**
@@ -151,34 +151,34 @@ class VulcanHebeCe {
 	 * @param dateFrom The start of the date range
 	 * @param dateTo  The end of the date range
 	 * @async
-	 * @returns {Homework}
+	 * @returns {VulcanApiResponse<Array<HomeworkEnvelope>>}
 	 */
 	async getHomework(dateFrom: Date, dateTo: Date) {
 		this.checkConnection();
-		const homework:Homework = await getHw(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
-		return homework as Homework;
+		const homework:VulcanApiResponse<Array<HomeworkEnvelope>> = await getHw(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
+		return homework;
 	}
 	/**
 	 * Gets your grades for the current period from the API.
 	 * @async
-	 * @returns {Grade}
+	 * @returns {VulcanApiResponse<Array<GradeEnvelope>>}
 	 */
 	async getGrades() {
 		this.checkConnection();
-		const grades:Grade = await ggrades(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
-		return grades as Grade;
+		const grades:VulcanApiResponse<Array<GradeEnvelope>> = await ggrades(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
+		return grades;
 	}
 	/**
 	 * Gets your timetable from the API.
 	 * @param dateFrom The start of the date range
 	 * @param dateTo The end of the date range
 	 * @async
-	 * @returns {Lesson}
+	 * @returns {VulcanApiResponse<Array<LessonEnvelope>>}
 	 */
 	async getLessons(dateFrom: Date, dateTo: Date) {
 		this.checkConnection();
-		const lessons:Lesson = await fLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
-		return lessons as Lesson;
+		const lessons:VulcanApiResponse<Array<LessonEnvelope>> = await fLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
+		return lessons;
 	}
 
 	/**
@@ -186,35 +186,35 @@ class VulcanHebeCe {
 	 * @param dateFrom The start of the date range
 	 * @param dateTo The end of the date range
 	 * @async
-	 * @returns {ChangedLesson}
+	 * @returns {LessonChangeEnvelope}
 	 */
 	async getChangedLessons(dateFrom: Date, dateTo: Date) {
 		this.checkConnection();
-		const lessons:ChangedLesson = await changedLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
-		return lessons as ChangedLesson;
+		const lessons:VulcanApiResponse<Array<LessonChangeEnvelope>> = await changedLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
+		return lessons;
 	}
 	/**
 	 * Gets your attendance from the API.
 	 * @param dateFrom The start of the date range
 	 * @param dateTo The end of the date range
-	 * @returns {Attendance}
+	 * @returns {VulcanApiResponse<Array<AttendanceEnvelope>>}
 	 */
 	async getAttendance(dateFrom: Date, dateTo: Date) {
 		this.checkConnection();
-		const attendanceobj:Attendance = await attendance(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
-		return attendanceobj as Attendance;
+		const attendanceobj:VulcanApiResponse<Array<AttendanceEnvelope>> = await attendance(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
+		return attendanceobj;
 	}
 
 	/**
 	 * Gets your exams from the API.
 	 * @param dateFrom The start of the date range
 	 * @param dateTo The end of the date range
-	 * @returns {Exam}
+	 * @returns {VulcanApiResponse<Array<ExamEnvelope>>}
 	 */
 	async getExams(dateFrom: Date, dateTo: Date) {
 		this.checkConnection();
-		const examsobj:Exam = await getexams(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
-		return examsobj as Exam;
+		const examsobj:VulcanApiResponse<Array<ExamEnvelope>> = await getexams(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
+		return examsobj;
 	}
 
 	messages = {
@@ -224,23 +224,23 @@ class VulcanHebeCe {
 		 * Messages are automatically sorted from newest to oldest.
 		 * @param type The type of the message (0 = received, 1 = sent, 2 = deleted)
 		 * @param amount How many messages do you want to fetch
-		 * @returns {Message}
+		 * @returns {VulcanApiResponse<Array<MessageEnvelope>>}
 		 */
 		get: async (type:Exclude<number, 0 | 1 |2>, amount:number) => {
 			this.checkConnection();
-			const messages:Message = await messagesGet(this.keypair, this.selectedStudent.RestURL, this.pupilJson, type, amount);
-			return messages as Message;
+			const messages:VulcanApiResponse<Array<MessageEnvelope>> = await messagesGet(this.keypair, this.selectedStudent.RestURL, this.pupilJson, type, amount);
+			return messages;
 		},
 		/**
 		 * Gets the address book from the API.
 		 * 
 		 * Useful to send a message. Contains MessageBoxes IDs that you can send a message to.
-		 * @returns {AddressBook}
+		 * @returns {VulcanApiResponse<AddressBookEnvelope>}
 		 */
 		getAddressBook: async () => {
 			this.checkConnection();
-			const addrbook:AddressBook = await addressbook(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
-			return addrbook as AddressBook;
+			const addrbook:VulcanApiResponse<Array<AddressBookEnvelope>> = await addressbook(this.keypair, this.selectedStudent.RestURL, this.pupilJson);
+			return addrbook;
 		}
 	}
 	private checkConnection(checkStudents: boolean = true) {

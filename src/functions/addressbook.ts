@@ -1,9 +1,7 @@
-import moment from 'moment';
 import * as strings from '../strings';
-import { KeyPair, PupilEnvelope } from '../types';
+import { AddressBookEnvelope, KeyPair, PupilEnvelope, VulcanApiResponse } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
-import { AddressBook } from '.';
 
 export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope) => {
 	if (!restUrl) throw new Error('No REST URL provided!');
@@ -19,7 +17,7 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope) =>
 	})
 	console.log(url)
 	// @ts-ignore
-	let data:AddressBook = await aab.json();
+	let data: VulcanApiResponse<Array<AddressBookEnvelope>> = await aab.json();
 	handleErrors(data);
-	return data as AddressBook;
+	return data as VulcanApiResponse<Array<AddressBookEnvelope>>;
 }

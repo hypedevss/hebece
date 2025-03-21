@@ -1,9 +1,7 @@
 import * as strings from '../strings';
-import { KeyPair } from '../types';
-import { PupilEnvelope } from '../types';
+import { KeyPair, PupilEnvelope, VulcanApiResponse, MessageEnvelope } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
-import { Message } from '.';
 
 export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope, type: number, amount: number) => {
 	if (!restUrl) throw new Error('No REST URL provided!');
@@ -20,9 +18,9 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope, ty
 	})
 	console.log(url)
 	// @ts-ignore
-	let data:Message = await aab.json();
+	let data:VulcanApiResponse<Array<MessageEnvelope>> = await aab.json();
 	handleErrors(data);
 	data.Envelope.sort((a, b) => b.DateSent.Timestamp - a.DateSent.Timestamp);
 	data.Envelope = data.Envelope.slice(0, amount);
-	return data as Message;
+	return data as VulcanApiResponse<Array<MessageEnvelope>>;
 }
