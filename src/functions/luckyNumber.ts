@@ -1,7 +1,6 @@
 import moment from 'moment';
 import * as strings from '../strings';
-import { LuckyNumber } from '.'
-import { KeyPair, PupilEnvelope } from '../types';
+import { KeyPair, PupilEnvelope, LuckyNumberEnvelope, VulcanApiResponse } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
 
@@ -18,7 +17,7 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope) =>
 		headers: headers,
 	})
 	// @ts-ignore
-	const data:LuckyNumber = await aab.json();
+	const data:VulcanApiResponse<LuckyNumberEnvelope> = await aab.json();
 	handleErrors(data);
-	return data as LuckyNumber;
+	return data as VulcanApiResponse<LuckyNumberEnvelope>;
 }

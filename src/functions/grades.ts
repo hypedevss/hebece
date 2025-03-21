@@ -1,6 +1,5 @@
 import * as strings from '../strings';
-import { Grade } from '.'
-import { KeyPair, PupilEnvelope } from '../types';
+import { KeyPair, PupilEnvelope, GradeEnvelope, VulcanApiResponse } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
 export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope) => {
@@ -17,7 +16,7 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope) =>
 		headers: headers,
 	})
 	// @ts-ignore
-	const data:Grade = await aab.json();
+	const data:VulcanApiResponse<Array<GradeEnvelope>> = await aab.json();
 	handleErrors(data);
-	return data as Grade;
+	return data as VulcanApiResponse<Array<GradeEnvelope>>;
 }

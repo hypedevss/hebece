@@ -1,7 +1,6 @@
 import moment from 'moment';
 import * as strings from '../strings';
-import { Homework } from '.'
-import { KeyPair, PupilEnvelope } from '../types';
+import { KeyPair, PupilEnvelope, HomeworkEnvelope, VulcanApiResponse } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
 export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope, dateFrom: Date, dateTo: Date) => {
@@ -12,8 +11,12 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope, da
 	const url = `${strings.BASE_URL}/${tenant}/${pupil.Unit.Symbol}/api/mobile/homework/byPupil?unitId=${pupil.Unit.Id}&pupilId=${pupil.Pupil.Id}&dateFrom=${moment(dateFrom).format('YYYY-MM-DD')}&dateTo=${moment(dateTo).format('YYYY-MM-DD')}&pageSize=100`;
 	const date = new Date();
 	const headers = buildHeaders(keyPair, null, date, url);
+	const aab = await fetch(url, {
+		method: 'GET',
+		headers: headers,
+	})
 	// @ts-ignore
-	const data:Homework = await aab.json();
+	const data:VulcanApiResponse<Array<HomeworkEnvelope>> = await aab.json();
 	handleErrors(data);
-	return data as Homework;
+	return data as VulcanApiResponse<Array<HomeworkEnvelope>>;
 }

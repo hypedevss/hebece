@@ -1,8 +1,6 @@
 import moment from 'moment';
 import * as strings from '../strings';
-import { KeyPair } from '../types';
-import { PupilEnvelope } from '../types';
-import { Attendance } from '.';
+import { AttendanceEnvelope, KeyPair, PupilEnvelope, VulcanApiResponse } from '../types';
 import buildHeaders from '../utilities/buildHeaders';
 import handleErrors from '../utilities/handleErrors';
 export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope, dateFrom: Date, dateTo: Date) => {
@@ -18,7 +16,7 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope, da
 		headers: headers,
 	})
 	// @ts-ignore
-	const data:Attendance = await aab.json();
+	const data:VulcanApiResponse<Array<AttendanceEnvelope>> = await aab.json();
 	handleErrors(data);
-	return data as Attendance
+	return data as VulcanApiResponse<Array<AttendanceEnvelope>>
 }
