@@ -8,7 +8,7 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope) =>
 	if (!pupil) throw new Error('No PUPIL provided!');
 	const tenant = restUrl.replace(`${strings.BASE_URL}/`, '');
 	const currentPeriod = pupil.Periods.find(p => p.Current === true);
-	const url = `${strings.BASE_URL}/${tenant}/${pupil.Unit.Symbol}/api/mobile/grade/byPupil?unitId=${pupil.Unit.Id}&pupilId=${pupil.Pupil.Id}&periodId=${currentPeriod.Id}&pageSize=100`;
+	const url = `${restUrl}/${pupil.Unit.Symbol}/api/mobile/grade/byPupil?unitId=${pupil.Unit.Id}&pupilId=${pupil.Pupil.Id}&periodId=${currentPeriod.Id}&pageSize=100`;
 	const date = new Date();
 	const headers = buildHeaders(keyPair, null, date, url);
 	const aab = await fetch(url, {

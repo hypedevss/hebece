@@ -7,9 +7,8 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope, ty
 	if (!restUrl) throw new Error('No REST URL provided!');
 	if (!keyPair) throw new Error('No KEYPAIR provided!');
 	if (!pupil) throw new Error('No PUPIL provided!');
-	const tenant = restUrl.replace(`${strings.BASE_URL}/`, '');
 	const messageType = (type: Exclude<number, 0 | 1 |2>) => ['received', 'sent', 'deleted'][type];
-	const url = `${strings.BASE_URL}/${tenant}/${pupil.Unit.Symbol}/api/mobile/messages/${messageType(type)}/byBox?box=${pupil.MessageBox.GlobalKey}&lastId=-2147483648&pupilId=${pupil.Pupil.Id}&pageSize=500`;
+	const url = `${restUrl}/${pupil.Unit.Symbol}/api/mobile/messages/${messageType(type)}/byBox?box=${pupil.MessageBox.GlobalKey}&lastId=-2147483648&pupilId=${pupil.Pupil.Id}&pageSize=500`;
 	const date = new Date();
 	const headers = buildHeaders(keyPair, null, date, url);
 	const aab = await fetch(url, {

@@ -8,8 +8,7 @@ export default async (keyPair:KeyPair, restUrl: string, pupil: PupilEnvelope) =>
 	if (!restUrl) throw new Error('No REST URL provided!');
 	if (!keyPair) throw new Error('No KEYPAIR provided!');
 	if (!pupil) throw new Error('No PUPIL provided!');
-	const tenant = restUrl.replace(`${strings.BASE_URL}/`, '');
-	const url = `${strings.BASE_URL}/${tenant}/${pupil.Unit.Symbol}/api/mobile/school/lucky?constituentId=${pupil.ConstituentUnit.Id}&day=${moment().format('YYYY-MM-DD')}`;
+	const url = `${restUrl}/${pupil.Unit.Symbol}/api/mobile/school/lucky?constituentId=${pupil.ConstituentUnit.Id}&day=${moment().format('YYYY-MM-DD')}`;
 	const date = new Date();
 	const headers = buildHeaders(keyPair, null, date, url);
 	const aab = await fetch(url, {

@@ -4,7 +4,7 @@ const VERSION_CODE: string = '621';
 const VAPI: string = '1';
 const DEVICE_MODEL: string = "Xiaomi MI 9";
 const APP_VERSION: string = "25.02.14 (G)"
-const BASE_URL: string = "https://lekcjaplus.vulcan.net.pl";
+const BASE_URL: string = "https://lekcjaplus.vulcan.net.pl/";
 
 export {
     USER_AGENT,
