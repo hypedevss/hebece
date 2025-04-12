@@ -1,9 +1,9 @@
 {
   "name": "hebece",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "Library for interacting with eduVULCAN's mobile API in made in node.js ",
   "main": "bin/index.js",
-  "types": "src/types.d.ts",
+  "types": "bin/index.d.ts",
   "scripts": {
     "build": "tsc",
     "clean": "rm -r ./bin",

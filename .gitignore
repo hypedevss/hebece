@@ -3,3 +3,4 @@ pnpm-lock.yaml
 test.js
 test.ts
 node_modules
+keystore.json
