@@ -186,11 +186,11 @@ class VulcanHebeCe {
 	 * @param dateFrom The start of the date range
 	 * @param dateTo The end of the date range
 	 * @async
-	 * @returns {LessonChangeEnvelope}
+	 * @returns {LessonEnvelope}
 	 */
 	async getChangedLessons(dateFrom: Date, dateTo: Date) {
 		this.checkConnection();
-		const lessons:VulcanApiResponse<Array<LessonChangeEnvelope>> = await changedLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
+		const lessons:VulcanApiResponse<Array<LessonEnvelope>> = await changedLessons(this.keypair, this.selectedStudent.RestURL, this.pupilJson, dateFrom, dateTo);
 		return lessons;
 	}
 	/**

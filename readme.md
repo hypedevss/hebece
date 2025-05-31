@@ -35,4 +35,4 @@ Every output from functions has it's typings, so it's easier to develop as you a
 
 # Usage
 
-Moved [HERE](https://hebece.hypedevs.lol/)
+Moved [HERE](https://motylek.gitbook.io/hebece/)

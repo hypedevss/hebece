@@ -144,7 +144,7 @@ interface PupilMessageBox {
 	GlobalKey: string
 	Name: string
 }
-interface PupilEnvelope {
+export interface PupilEnvelope {
 	TopLevelPartition: string,
 	Partition: string,
 	Links: PupilLinks
@@ -184,7 +184,7 @@ interface Period {
 }
 
 // Lucky Number
-interface LuckyNumberEnvelope {
+export interface LuckyNumberEnvelope {
 	Day: string,
 	Number: number,
 }
@@ -213,7 +213,7 @@ interface Subject {
 	Position: number
 }
 
-interface HomeworkEnvelope {
+export interface HomeworkEnvelope {
 	Id: number
 	Key: string
 	IdPupil: number
@@ -255,7 +255,7 @@ interface GradeColumn {
 }
 
 
-interface GradeEnvelope {
+export interface GradeEnvelope {
 	Id: number
 	Key: string
 	Pupilid: number
@@ -295,7 +295,7 @@ interface LessonClass {
 	Symbol: string
 }
 
-interface LessonEnvelope {
+export interface LessonEnvelope {
 	Id: number
 	MergeChangeId: number | null
 	Event: any // Unknown
@@ -308,6 +308,7 @@ interface LessonEnvelope {
 	TeacherSecondary2: Teacher | null
 	Change: LessonChange | null
 	Clazz: LessonClass
+	Substitution: LessonChangeEnvelope | null
 	Distribution: any // Unknown
 	PupilAlias: any // Unknown
 	Visible: boolean
@@ -370,7 +371,7 @@ interface AttendancePresenceType {
 	Removed: boolean
 }
 
-interface AttendanceEnvelope {
+export interface AttendanceEnvelope {
 	LessonId: number
 	PresenceType: AttendancePresenceType
 	Collection: Array<any>
@@ -401,7 +402,7 @@ interface AttendanceEnvelope {
 
 // Exams
 
-interface ExamEnvelope {
+export interface ExamEnvelope {
 	Id: number
 	Key: string
 	Type: string
@@ -434,7 +435,7 @@ interface MessageAttachment {
 	Link: string
 }
 
-interface MessageEnvelope {
+export interface MessageEnvelope {
 	Id: string
 	GlobalKey: string
 	ThreadKey: string
@@ -452,7 +453,7 @@ interface MessageEnvelope {
 
 // Address book
 
-interface AddressBookEnvelope {
+export interface AddressBookEnvelope {
 	GlobalKey: string
 	Name: string
 	Group: string 
